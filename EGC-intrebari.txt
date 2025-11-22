@@ -1,0 +1,21 @@
+Răspunsuri Tema: Iluminare și Materiale în OpenGL – Iacob Ruben-Alexandru
+
+1. Descrieți diferențele dintre iluminarea din lumea reală și modelul de iluminare utilizat de OpenGL.
+Modelul de iluminare al OpenGL (Fixed Function Pipeline) este o aproximare matematică simplificată a legilor fizice complexe care guvernează lumina în lumea reală. În realitate, lumina se bazează pe fizică cuantică și interacțiunea fotonilor, reflectându-se infinit între obiecte (cunoscut sub numele de iluminare globală sau radiosity).
+Prin contrast, modelul standard OpenGL folosește o tehnică de iluminare locală, calculând contribuția luminii direct de la sursa la suprafața obiectului (în mod tipic pe vertex), fără a lua în considerare modul în care lumina s-ar reflecta de pe alte suprafețe din scenă. Acesta utilizează formule empirice, cum ar fi Modelul Phong, pentru a determina culorile finale, combinând componentele Ambient, Diffuse și Specular.
+
+2. Câte surse de lumină sunt suportate în OpenGL folosind OpenTK?
+O configurație standard a pipeline-ului OpenGL de funcții fixe (Fixed Function Pipeline) este limitată la un număr de maximum 8 surse de lumină care pot fi active simultan într-o scenă. Aceste surse sunt identificate prin constantele predefinite, începând de la GL_LIGHT0 și mergând până la GL_LIGHT7.
+Această limitare provine din constrângerile inițiale ale specificațiilor OpenGL și ale hardware-ului grafic destinat să gestioneze aceste calcule în paralel. Numărul maxim exact suportat de implementarea grafică a unui anumit sistem poate fi verificat folosind funcția GL.GetInteger(GetPName.MaxLights).
+
+3. Definiți iluminarea de material și specificați unde și când este utilizată.
+Proprietatea de iluminare de material GL_EMISSION face parte din specificațiile materialului obiectului și nu este o sursă de lumină propriu-zisă în sensul fizic al termenului. Ea definește o culoare care pare să fie emisă de obiect, creând un efect de "strălucire" sau "glow".
+Este important de reținut că, în cadrul modelului standard, această lumină nu contribuie la iluminarea celorlalte obiecte din scenă; ea doar se adaugă la culoarea finală a obiectului care o posedă. Practic, aceasta schimbă culoarea obiectului, făcându-l să arate iluminat chiar și în întuneric, fără a avea vreun impact asupra mediului înconjurător.
+
+4. Efectul activării unei surse de lumină secundare comparativ cu utilizarea unei singure surse.
+Contribuția surselor de lumină în modelul OpenGL este aditivă (cumulativă). Activarea unei surse secundare, cum ar fi GL_LIGHT1, determină ca intensitatea luminoasă a fiecărui punct de pe suprafața obiectului să fie suma intensităților individuale ale tuturor luminilor active (Ambient, Diffuse și Specular).
+Efectul unei surse secundare este de a:
+1.	Ilumina zonele aflate în umbră: Zonele ascunse față de prima sursă vor fi acum expuse și luminate de noua sursă.
+2.	Crea noi puncte de strălucire (Specular Highlights): Se vor forma noi pete lucioase pe suprafața materialului, orientate spre direcția sursei secundare.
+Formula simplificată a culorii finale a unui vertex implică sumarea tuturor contribuțiilor:
+ 
